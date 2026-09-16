@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DJ_PLAYLISTS Version="1.0.0">
+  <PRODUCT Name="rekordbox" Version="6.0.0" Company="AlphaTheta"/>
+  
+  <COLLECTION Entries="10">
+    <TRACK TrackID="101" Name="On My Knees" Artist="Rufus Du Sol" BPM="122.00" Key="8A" TotalTime="360" Location="file://localhost/Users/sample/Music/Rufus_On_My_Knees.mp3" Genre="Melodic House &amp; Techno"/>
+    <TRACK TrackID="102" Name="Innerbloom" Artist="Rufus Du Sol" BPM="120.00" Key="9A" TotalTime="540" Location="file://localhost/Users/sample/Music/Rufus_Innerbloom.mp3" Genre="Deep House"/>
+    <TRACK TrackID="103" Name="Consciousness" Artist="Anyma" BPM="126.00" Key="10A" TotalTime="300" Location="file://localhost/Users/sample/Music/Anyma_Consciousness.mp3" Genre="Melodic Techno"/>
+    <TRACK TrackID="104" Name="Acrobat" Artist="Yotto" BPM="123.00" Key="11A" TotalTime="420" Location="file://localhost/Users/sample/Music/Yotto_Acrobat.mp3" Genre="Progressive House"/>
+    <TRACK TrackID="105" Name="Opus" Artist="Eric Prydz" BPM="126.00" Key="5A" TotalTime="540" Location="file://localhost/Users/sample/Music/Eric_Prydz_Opus.mp3" Genre="Progressive House"/>
+    <TRACK TrackID="106" Name="Spacetime" Artist="Ben Böhmer" BPM="121.00" Key="12A" TotalTime="320" Location="file://localhost/Users/sample/Music/Ben_Bohmer_Spacetime.mp3" Genre="Deep House"/>
+    <TRACK TrackID="107" Name="Signs" Artist="Anyma &amp; Innellea" BPM="124.00" Key="1A" TotalTime="380" Location="file://localhost/Users/sample/Music/Anyma_Signs.mp3" Genre="Melodic Techno"/>
+    <TRACK TrackID="108" Name="Return to Oz (Artbat Remix)" Artist="Monolink" BPM="124.00" Key="10A" TotalTime="460" Location="file://localhost/Users/sample/Music/Monolink_Return_To_Oz.mp3" Genre="Melodic Techno"/>
+    <TRACK TrackID="109" Name="After Life" Artist="Tchami" BPM="122.00" Key="8B" TotalTime="280" Location="file://localhost/Users/sample/Music/Tchami_After_Life.mp3" Genre="Future House"/>
+    <TRACK TrackID="110" Name="Underwater" Artist="Rufus Du Sol" BPM="124.00" Key="8A" TotalTime="340" Location="file://localhost/Users/sample/Music/Rufus_Underwater.mp3" Genre="Indie Dance"/>
+  </COLLECTION>
+  
+  <PLAYLISTS>
+    <NODE Type="0" Name="ROOT" Count="0">
+    </NODE>
+  </PLAYLISTS>
+</DJ_PLAYLISTS>
