@@ -31,6 +31,18 @@ OLD_APP_DIR = Path.home() / ".rekordbox-recommender"
 OLD_CONFIG_FILE = OLD_APP_DIR / "config.json"
 OLD_CACHE_FILE = OLD_APP_DIR / "cache.json"
 
+# Gemini Model Definition
+DEFAULT_GEMINI_MODEL = "gemini-3.8-flash"
+
+# Default Pathfinder Scoring Weights
+DEFAULT_WEIGHTS = {
+    "weight_key": 10.0,
+    "weight_bpm": 5.0,
+    "weight_energy": 3.0,
+    "weight_genre": 2.0,
+    "weight_rating": 2.0,
+}
+
 def ensure_app_dir():
     """
     Ensure the application configuration and cache directories exist.

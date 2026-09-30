@@ -16,7 +16,7 @@ from google import genai
 from google.genai import types
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from set_recommender.xml_handler import Track
-from set_recommender.config import load_cache, save_cache, get_api_key
+from set_recommender.config import load_cache, save_cache, get_api_key, DEFAULT_GEMINI_MODEL, DEFAULT_WEIGHTS
 
 # Suppress the Google GenAI SDK Automatic Function Calling deprecation warning
 warnings.filterwarnings("ignore", message=".*automatic function calling.*")
@@ -108,7 +108,7 @@ def enrich_batch_with_retry(
     try:
         # Query Gemini using standard Pydantic schema enforcement (application/json)
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model=DEFAULT_GEMINI_MODEL,
             contents=prompt_content,
             config=types.GenerateContentConfig(
                 system_instruction=(
@@ -131,26 +131,18 @@ def enrich_batch_with_retry(
         for idx, enriched in enumerate(validated_response.tracks):
             if idx < len(batch):
                 target_track = batch[idx]
-                target_track.style = enriched.style
-                target_track.energy = enriched.energy
-                target_track.vocal_type = enriched.vocal_type
-                target_track.popularity_tier = enriched.popularity_tier
-                target_track.summary = enriched.summary
-                if (not target_track.year or target_track.year == 0) and enriched.year:
-                    target_track.year = enriched.year
+                target_track.apply_enrichment(
+                    style=enriched.style,
+                    energy=enriched.energy,
+                    vocal_type=enriched.vocal_type,
+                    popularity_tier=enriched.popularity_tier,
+                    summary=enriched.summary,
+                    year=enriched.year or 0
+                )
                 
                 # Save inside the local cache database
                 track_hash = get_track_hash(target_track.artist, target_track.title)
-                cache[track_hash] = {
-                    "artist": target_track.artist,
-                    "title": target_track.title,
-                    "style": enriched.style,
-                    "energy": enriched.energy,
-                    "vocal_type": enriched.vocal_type,
-                    "popularity_tier": enriched.popularity_tier,
-                    "summary": enriched.summary,
-                    "year": target_track.year
-                }
+                cache[track_hash] = target_track.to_cache_dict()
     except Exception as e:
         # If the batch has more than 1 track, split in half and retry recursively
         if len(batch) > 1:
@@ -162,22 +154,15 @@ def enrich_batch_with_retry(
         else:
             # Single track failed; apply fallback and log warning
             failed_track = batch[0]
-            failed_track.style = failed_track.genre if failed_track.genre else "Electronic"
-            failed_track.energy = 5  # Safe neutral default
-            failed_track.vocal_type = "instrumental"
-            failed_track.popularity_tier = "underground"
-            failed_track.summary = f"{failed_track.style} track"
+            failed_track.apply_enrichment(
+                style=failed_track.genre if failed_track.genre else "Electronic",
+                energy=5,
+                vocal_type="instrumental",
+                popularity_tier="underground",
+                summary=f"{failed_track.genre or 'Electronic'} track"
+            )
             track_hash = get_track_hash(failed_track.artist, failed_track.title)
-            cache[track_hash] = {
-                "artist": failed_track.artist,
-                "title": failed_track.title,
-                "style": failed_track.style,
-                "energy": failed_track.energy,
-                "vocal_type": failed_track.vocal_type,
-                "popularity_tier": failed_track.popularity_tier,
-                "summary": failed_track.summary,
-                "year": failed_track.year
-            }
+            cache[track_hash] = failed_track.to_cache_dict()
             print(f"\n[Warning] API enrichment failed for individual track '{failed_track.artist} - {failed_track.title}': {e}. Applying fallback parameters.")
 
 def enrich_tracks(
@@ -317,7 +302,7 @@ def resolve_situation_parameters(situation: str, api_key: str) -> SituationParam
     
     try:
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model=DEFAULT_GEMINI_MODEL,
             contents=prompt,
             config=types.GenerateContentConfig(
                 system_instruction=(
@@ -336,10 +321,10 @@ def resolve_situation_parameters(situation: str, api_key: str) -> SituationParam
         return SituationParameters(
             progression="low-to-high",
             custom_progression=None,
-            weight_key=10.0,
-            weight_bpm=5.0,
-            weight_energy=3.0,
-            weight_genre=2.0,
+            weight_key=DEFAULT_WEIGHTS["weight_key"],
+            weight_bpm=DEFAULT_WEIGHTS["weight_bpm"],
+            weight_energy=DEFAULT_WEIGHTS["weight_energy"],
+            weight_genre=DEFAULT_WEIGHTS["weight_genre"],
             target_duration_minutes=None,
             target_tracks_count=None,
             explanation=f"Fallback to default parameters (error resolving situation: {e})"

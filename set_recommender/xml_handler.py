@@ -49,6 +49,29 @@ class Track:
         self.summary = ""  # 1-sentence vibe/timbre description
         self.popularity_tier = "underground"  # "anthem", "well_known", "underground", or "deep_cut"
 
+    def apply_enrichment(self, style: str, energy: int, vocal_type: str, popularity_tier: str, summary: str, year: int = 0):
+        """Apply enriched metadata attributes from LLM response or cache."""
+        self.style = style
+        self.energy = energy
+        self.vocal_type = vocal_type
+        self.popularity_tier = popularity_tier
+        self.summary = summary
+        if (not self.year or self.year == 0) and year:
+            self.year = year
+
+    def to_cache_dict(self) -> Dict[str, Any]:
+        """Convert track metadata into a cache serializable dictionary."""
+        return {
+            "artist": self.artist,
+            "title": self.title,
+            "style": self.style,
+            "energy": self.energy,
+            "vocal_type": self.vocal_type,
+            "popularity_tier": self.popularity_tier,
+            "summary": self.summary,
+            "year": self.year
+        }
+
     def __repr__(self) -> str:
         return f"<Track {self.track_id}: {self.artist} - {self.title} (BPM: {self.bpm}, Key: {self.key}, Energy: {self.energy}, Popularity: {self.popularity_tier})>"
 

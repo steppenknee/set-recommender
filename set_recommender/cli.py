@@ -16,7 +16,7 @@ from rich.console import Console
 from rich.table import Table
 from rich import print as rprint
 
-from set_recommender.config import get_api_key, save_config, CONFIG_FILE
+from set_recommender.config import get_api_key, save_config, CONFIG_FILE, DEFAULT_WEIGHTS
 from set_recommender.xml_handler import parse_rekordbox_xml, save_recommended_xml
 from set_recommender.enricher import enrich_tracks, resolve_situation_parameters
 from set_recommender.recommender import recommend_set_beam_search, parse_key_to_camelot
@@ -104,11 +104,11 @@ def recommend_cmd(
     progression: str = typer.Option("low-to-high", "--progression", "-p", help="Energy profile progression preset: low-to-high, high-to-low, wave, u-shape."),
     custom_progression: Optional[str] = typer.Option(None, "--custom-progression", help="Comma-separated target energy profile (e.g. '3,4,6,5,8,9,7'). Overrides preset."),
     playlist_name: str = typer.Option("Recommended DJ Set", "--playlist-name", help="Name of the playlist node generated in Rekordbox."),
-    weight_key: float = typer.Option(10.0, "--weight-key", help="Mismatch penalty weight for harmonic key compatibility."),
-    weight_bpm: float = typer.Option(5.0, "--weight-bpm", help="Mismatch penalty weight for BPM differences."),
-    weight_energy: float = typer.Option(3.0, "--weight-energy", help="Mismatch penalty weight for target energy curve deviation."),
-    weight_genre: float = typer.Option(2.0, "--weight-genre", help="Mismatch penalty weight for subgenre style compatibility."),
-    weight_rating: float = typer.Option(2.0, "--weight-rating", help="Priority bonus weight for higher-rated tracks."),
+    weight_key: float = typer.Option(DEFAULT_WEIGHTS["weight_key"], "--weight-key", help="Mismatch penalty weight for harmonic key compatibility."),
+    weight_bpm: float = typer.Option(DEFAULT_WEIGHTS["weight_bpm"], "--weight-bpm", help="Mismatch penalty weight for BPM differences."),
+    weight_energy: float = typer.Option(DEFAULT_WEIGHTS["weight_energy"], "--weight-energy", help="Mismatch penalty weight for target energy curve deviation."),
+    weight_genre: float = typer.Option(DEFAULT_WEIGHTS["weight_genre"], "--weight-genre", help="Mismatch penalty weight for subgenre style compatibility."),
+    weight_rating: float = typer.Option(DEFAULT_WEIGHTS["weight_rating"], "--weight-rating", help="Priority bonus weight for higher-rated tracks."),
     beam_width: int = typer.Option(50, "--beam-width", help="Beam width for optimization lookahead pathfinding."),
     transition_overlap: int = typer.Option(60, "--transition-overlap", help="Estimated average overlap transition/blend time in seconds between consecutive tracks."),
     situation: Optional[str] = typer.Option(None, "--situation", "-s", help="A human-like mood or situation description (e.g. 'early evening bar', '90s party') to dynamically configure set parameters using Gemini."),
